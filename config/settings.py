@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     "debug_toolbar",
+    
     'pages.apps.PagesConfig',
     'listings.apps.ListingsConfig',
     'doctors.apps.DoctorsConfig',
