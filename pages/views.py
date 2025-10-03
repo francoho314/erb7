@@ -1,6 +1,7 @@
 from django.shortcuts import render
 # Create your views here.
 from listings.models import Listing
+from doctors.models import Doctor
 
 def index(request):
     listings = Listing.objects.filter(is_published=True)[:3]
@@ -8,5 +9,11 @@ def index(request):
     return render(request, 'pages/index.html', context)
 
 def about(request):
-    return render(request, 'pages/about.html')
+    doctors = Doctor.objects.order_by('-hire_date')[:3]
+    mvp_doctor = Doctor.objects.all().filter(is_mvp=True)
+    context = {
+        "doctors":doctors,
+        "mvp_doctor":mvp_doctor
+    }
+    return render(request, 'pages/about.html', context)
 
