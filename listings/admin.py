@@ -6,7 +6,7 @@ from .models import Listing
 # Register your models here.
 
 class ListingAdmin(admin.ModelAdmin):
-    list_display = 'id', 'title', 'doctor', 'is_published', 'rooms', 'district'
+    list_display = 'id', 'title', 'doctor', 'is_published', 'district', 'rooms'
     list_display_links = 'id', 'title',
     list_filter = 'doctor',
     list_editable = 'is_published', 'rooms'
