@@ -13,8 +13,8 @@
               tempore! Consectetur, id commodi!
             </p>
             <div class="search">
-                {% comment %} fix search.html {% endcomment %}
-              <form action="search.html">
+
+              <form action="{% url 'listings:search' %}">
                 <!-- Form Row 1 -->
                 <div class="form-row">
                   <div class="col-md-12 mb-3">
@@ -41,12 +41,12 @@
                     </select>
                   </div>
                   <div class="col-md-4 mb-3">
-                    <label class="sr-only">Nights</label>
-                    <select name="bedrooms" class="form-control">
+                    <label class="sr-only">Rooms</label>
+                    <select name="rooms" class="form-control">
                       <option selected="true" value='' >
-                        Night (All)
+                        Rooms (All)
                       </option>
-                      {% for key,value in night_choices.items %}
+                      {% for key,value in rooms_choices.items %}
                       <option value="{{key}}">{{value}}</option>
                       {% endfor %}
                     </select>
@@ -56,7 +56,7 @@
                       <option selected="true" value=''>
                         Room types (All)
                       </option>
-                      {% for key,value in rooms_choices.items %}
+                      {% for key,value in room_choices.items %}
                       <option value="{{key}}">{{value}}</option>
                       {% endfor %}
                     </select>
