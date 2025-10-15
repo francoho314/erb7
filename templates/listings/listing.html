@@ -1,4 +1,8 @@
-{% extends "base.html" %} {%load humanize%} {% block content %} {% load static %} 
+{% extends "base.html" %} 
+{%load humanize%} 
+<!--block title-->
+{% block title %} | {{listing.title | title}} {% endblock title %}
+{% block content %} {% load static %} 
 <section id="showcase-inner" class="py-5 text-white">
     <div class="container">
     <div class="row text-center">
@@ -21,7 +25,7 @@
         <li class="breadcrumb-item">
             <a href={% url "listings:listings" %}>Listings</a>
         </li>
-        <li class="breadcrumb-item active">Lifeline Wellness Center</li>
+        <li class="breadcrumb-item active">{{listing.title}}</li>
         </ol>
     </nav>
     </div>
@@ -29,6 +33,7 @@
 
 <!-- Listing -->
 <section id="listing" class="py-4">
+    {% include 'partials/_alert.html' %}
     <div class="container">
     <a href={% url "listings:listings" %} class="btn btn-light mb-4">Back To Listings</a>
     <div class="row">
@@ -143,57 +148,64 @@
         <div class="row mb-5 fields">
             <div class="col-md-6">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item text-secondary">
-                <i class="fas fa-money-bill-alt"></i> Inpatient Fee
-                Estimate:
-                <span class="float-right">$20,000/Day</span>
-                </li>
-                <li class="list-group-item text-secondary">
-                <i class="fas fa-bed"></i> Bedrooms:
-                <span class="float-right">30</span>
-                </li>
-                <li class="list-group-item text-secondary">
-                <i class="fas fa-bath"></i> Bathrooms:
-                <span class="float-right">Private</span>
-                </li>
-                <li class="list-group-item text-secondary">
-                <i class="fas fa-dumbbell"></i> Treatment:
-                <span class="float-right"> Have </span>
-                </li>
-            </ul>
-            </div>
-            <div class="col-md-6">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item text-secondary">
-                <i class="fas fa-th-large"></i> Restrooms:
-                <span class="float-right">Have</span>
-                </li>
-                <li class="list-group-item text-secondary">
-                <i class="fas fa-square"></i> Specialized Care:
-                <span class="float-right">No</span>
-                </li>
-                <li class="list-group-item text-secondary">
-                <i class="fas fa-calendar"></i> Preventative Services:
-                <span class="float-right">Have</span>
-                </li>
-                <li class="list-group-item text-secondary">
-                <i class="fas fa-bed"></i> Minor Surgical Procedures:
-                <span class="float-right">No</span>
-                </li>
+                <div class="row py-2 text-secondary">
+                  <div class="col-6">
+                    <i class="fas fa-th-large"></i> Services {{listing.service}} 
+                  </div>
+                  <div class="col-6">
+                    <i class="fas fa-dumbbell"></i> Screens {{listing.screen}}
+                  </div>
+                </div>
+                <div class="row py-2 text-secondary">
+                  <div class="col-6">
+                    <i class="fas fa-bed"></i> Rooms {{listing.rooms}}
+                  </div>
+                  <div class="col-6">
+                    <i class="fas fa-bath"></i> Professionals {{listing.professional}}
+                  </div>
+                </div>
+                <hr />
+                <div class="row py-2 text-secondary">
+                  <div class="col-12"><i class="fas fa-user"></i> {{listing.doctor.name}}</div>
+                </div>
+                <div class="row text-secondary pb-2">
+                  <div class="col-12">
+                    <i class="fas fa-clock"></i> Reservation required
+                  </div>
+                </div>
             </ul>
             </div>
         </div>
 
-        <!-- Description -->
+        <!-- professional -->
         <div class="row mb-5">
-            <div class="col-md-12">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Mollitia recusandae esse reiciendis officia omnis non rerum
-            dicta cupiditate nostrum molestias deserunt aut minus inventore
-            animi atque, consequuntur ad fugit. Possimus culpa blanditiis
-            repellendus ipsa similique ullam, natus error dolor harum.
-            </div>
+            <h4 class="text-secondary">Professional : </h4>
+            {% if listing.professionals.all %} <!-- check if there are professionals -->
+            <ul>
+            {% for professional in listing.professionals.all %}
+            <!--Access fields from the Subject model (e.g., name)-->
+            <li class="mr-3"><h4>{{ professional.name }}</h4></li>
+            {% endfor %}
+            </ul>
+            {% else %}
+            <h4> <ul><li>No Professional </li></ul></h4>
+            {% endif %}
+        </div> 
+        <!-- Services -->
+        <div class="row mb-5">
+            <h4 class="text-secondary">Services : </h4>
+            {% if listing.services.all %} <!-- check if there are services -->
+            {% for services_tag in listing.services.all %}
+            <ul>
+            <!--Access fields from the Subject model (e.g., name)-->
+            <li class="mr-3"><h4>{{ services_tag.name | title }}</h4></li>
+            </ul>
+            {% endfor %}
+            {% else %}
+            <h4>No services</h4>
+            {% endif %}
         </div>
+        <div class="rcol-md-12">{{listing.description}}</div>
         </div>
         <div class="col-md-3">
         <div class="card mb-3">
@@ -230,31 +242,36 @@
         </button>
         </div>
         <div class="modal-body">
-        <form>
+        <form action="{% url 'contacts:contact' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="listing_id" value="{{listing.id}}" />
+            <input type="hidden" name="doctor_email" value="{{listing.doctor.email}}" />    
+            {% if user.is_authenticated %}
+            <input type="hidden" name="user_id" value="{{user.id}}" />
+            {% else %}
+            <input type="hidden" name="user_id" value="0" />
+            {% endif %}
             <div class="form-group">
-            <label for="property_name" class="col-form-label"
-                >Property:</label
-            >
+            <label for="clinic" class="col-form-label">Clinic:</label>
             <input
                 type="text"
                 name="listing"
                 class="form-control"
-                value="45 Prince Street"
-                disabled
+                value= "{{listing.title}}"
+                readonly
             />
             </div>
             <div class="form-group">
             <label for="name" class="col-form-label">Name:</label>
-            <input type="text" name="name" class="form-control" required />
+            <input type="text" name="name" class="form-control" {% if user.is_authenticated %} 
+            value="{{user.first_name}} {{user.last_name}}" readonly
+            {% endif %} />
             </div>
             <div class="form-group">
             <label for="email" class="col-form-label">Email:</label>
-            <input
-                type="email"
-                name="email"
-                class="form-control"
-                required
-            />
+            <input type="email" name="email" class="form-control" {% if user.is_authenticated %}
+            value="{{user.email}}" readonly
+            {% endif %} />
             </div>
             <div class="form-group">
             <label for="phone" class="col-form-label">Phone:</label>

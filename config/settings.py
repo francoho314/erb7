@@ -45,11 +45,13 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     "debug_toolbar",
     "taggit",
+    "widget_tweaks",
     
     'pages.apps.PagesConfig',
     'listings.apps.ListingsConfig',
     'doctors.apps.DoctorsConfig',
-    'accounts.apps.AccountsConfig'
+    'accounts.apps.AccountsConfig',
+    'contacts.apps.ContactsConfig',
 ]
 
 MIDDLEWARE = [
@@ -91,7 +93,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'clinic',
         'USER': 'postgres',
-        'PASSWORD': '8989',
+        'PASSWORD': os.getenv("DB_PASSWORD"),
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -149,4 +151,13 @@ TAGGIT_CASE_INSENSITIVE = True
 MESSAGE_TAGS = {
     messages.SUCCESS: 'success',
     messages.ERROR: 'danger',
-}   
+}  
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Replace with your SMTP host
+EMAIL_PORT = 587  # Common ports: 587 for TLS, 465 for SSL
+EMAIL_USE_TLS = True  # Set to True for TLS/STARTTLS, False for SSL
+EMAIL_USE_SSL = False  # Set to True for SSL, False for TLS/STARTTLS
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  # Your email address for authentication
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # Your email password or app-specific password
+DEFAULT_FROM_EMAIL = 'francoh68@gmail.com' # Default sender email if not specified in send_mail()
