@@ -4,14 +4,14 @@
 
 ### 1 Create virtual environment
 
-'''bash
+```bash
 mkvirtualenv erb7
-'''
+```
 ### 2 create project folder
 
-'''hash
+```hash
 django-admin startproject erb7
-'''
+```
 
 
-###4.run the server
+###4.run the server=
